@@ -1,10 +1,12 @@
 const asyncHnadler = require('express-async-handler')
+const Post = require('../models/postModel')
 
 // @desc   GET posts
 // @route  /api/posts
 // @access Private
 const getPosts = asyncHnadler(async (req, res) => {
-    res.status(200).json({message: 'Get posts'})
+    const posts = await Post.find()
+    res.status(200).json(posts)
 })
 
 // @desc   POST post
