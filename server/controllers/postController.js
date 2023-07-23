@@ -19,21 +19,49 @@ const createPost = asyncHnadler(async (req, res) => {
         throw new Error('Please add a text field')
     }
 
-    res.status(200).json({message: 'Create a post'})
+    const post = await Post.create({
+        title: req.body.title,
+        text: req.body.text
+    })
+
+    res.status(200).json(post)
 })
 
 // @desc   PUT post
 // @route  /api/posts/:id
 // @access Private
 const updatePost = asyncHnadler(async (req, res) => {
-    res.status(200).json({message: `Update a post ${req.params.id}`})
+    const post = await Post.findById(req.params.id)
+
+    if (!post) {
+        res.status(404)
+        throw new Error ('Post is not found')
+    }
+
+    // You should set the new option to true to return the document after update was applied.
+    const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    })
+
+    res.status(200).json(updatedPost)
 })
 
 // @desc   DELETE post
 // @route  /api/posts/:id
 // @access Private
 const deletePost = asyncHnadler(async (req, res) => {
-    res.status(200).json({message: `Delete a post ${req.params.id}`})
+    const post = await Post.findById(req.params.id)
+
+    if (!post) {
+        res.status(404)
+        throw new Error('Post is not found')
+    }
+
+    // await Post.findByIdAndRemove(post)
+    // another option is:
+    await post.deleteOne()
+
+    res.status(200).json({ id: req.params.id })
 })
 
 module.exports = {
