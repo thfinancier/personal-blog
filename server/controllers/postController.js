@@ -1,10 +1,18 @@
-const asyncHnadler = require('express-async-handler')
-const Post = require('../models/postModel')
+// Errors should be caught, and in order to do that try catch method is used.
+// But to avoid writing try catch method in every controller function
+// express-async-handler which is the function that catches the error and in my case passes 
+// it in errorHandler function could be used. 
+
+// !!! express-async-handler is A CATCH BLOCK under the hood that runs "next()" inside it. 
+// It catches an error and passes it on to the error handling route 
+// or in other words IT PASSES AN ERROR IN errorHandler function, witch act as a MIDDLEWARE 
+const asyncHandler = require('express-async-handler')
+// const Post = require('../models/postModel')
 
 // @desc   GET posts
 // @route  /api/posts
 // @access Private
-const getPosts = asyncHnadler(async (req, res) => {
+const getPosts = asyncHandler(async (req, res) => {
     const posts = await Post.find()
     res.status(200).json(posts)
 })
@@ -12,7 +20,7 @@ const getPosts = asyncHnadler(async (req, res) => {
 // @desc   POST post
 // @route  /api/posts
 // @access Private
-const createPost = asyncHnadler(async (req, res) => {
+const createPost = asyncHandler(async (req, res) => {
     
     if (!req.body.text) {
         res.status(400)
@@ -30,7 +38,7 @@ const createPost = asyncHnadler(async (req, res) => {
 // @desc   PUT post
 // @route  /api/posts/:id
 // @access Private
-const updatePost = asyncHnadler(async (req, res) => {
+const updatePost = asyncHandler(async (req, res) => {
     const post = await Post.findById(req.params.id)
 
     if (!post) {
@@ -49,7 +57,7 @@ const updatePost = asyncHnadler(async (req, res) => {
 // @desc   DELETE post
 // @route  /api/posts/:id
 // @access Private
-const deletePost = asyncHnadler(async (req, res) => {
+const deletePost = asyncHandler(async (req, res) => {
     const post = await Post.findById(req.params.id)
 
     if (!post) {
