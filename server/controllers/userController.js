@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const jws = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 const errorCatcher = require('express-async-handler')
 const User = require('../models/userModel')
 
@@ -36,7 +36,11 @@ const registerUser = errorCatcher(async (req, res) => {
         res.status(201).json({
             _id: user.id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            // _id is a mongodb primary key and it's set by mongo (it's long and ugly)
+            // while id (without an underscore) could be set by user
+            // ! Though value is the value
+            token: generateToken(user._id)
         })
     } else {
         res.status(400)
@@ -57,7 +61,8 @@ const loginUser = errorCatcher(async (req, res) => {
         res.status(201).json({
             _id: user.id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            token: generateToken(user._id)
         })} else {
             res.status(400)
             throw new Error('Invalid credentials')
@@ -70,6 +75,13 @@ const loginUser = errorCatcher(async (req, res) => {
 const getUserData = errorCatcher(async (req, res) => {
     res.send('Get user data')
 })
+
+// Generate JWT
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    })
+}
 
 
 module.exports = {
