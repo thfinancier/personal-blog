@@ -11,6 +11,7 @@ const protect = errorCatcher(async (req, res, next) => {
             token = req.headers.authorization.split(' ')[1]
             
             // Verify token
+            // jwt.verify() verifies the token and if it successfull return back the payload
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
             // Get user from the token and assign it to req.user

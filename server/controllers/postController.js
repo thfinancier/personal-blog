@@ -7,13 +7,14 @@
 // It catches an error and passes it on to the error handling route 
 // or in other words IT PASSES AN ERROR IN errorHandler function, witch act as a MIDDLEWARE 
 const asyncHandler = require('express-async-handler')
-// const Post = require('../models/postModel')
+const Post = require('../models/postModel')
+const User = require('../models/userModel')
 
 // @desc   GET posts
 // @route  /api/posts
 // @access Private
 const getPosts = asyncHandler(async (req, res) => {
-    const posts = await Post.find()
+    const posts = await Post.find({ user: req.user.id })
     res.status(200).json(posts)
 })
 
@@ -28,6 +29,7 @@ const createPost = asyncHandler(async (req, res) => {
     }
 
     const post = await Post.create({
+        user: req.user.id,
         title: req.body.title,
         text: req.body.text
     })
@@ -44,6 +46,19 @@ const updatePost = asyncHandler(async (req, res) => {
     if (!post) {
         res.status(404)
         throw new Error ('Post is not found')
+    }
+
+    const user = await User.findById(req.user.id)
+    // Check for user
+    if (!user) {
+        res.status(400)
+        throw new Error('User is not found')
+    }
+
+    // Make sure the logged in user matches post user 
+    if (post.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error('User is not authorised')
     }
 
     // You should set the new option to true to return the document after update was applied.
@@ -63,6 +78,19 @@ const deletePost = asyncHandler(async (req, res) => {
     if (!post) {
         res.status(404)
         throw new Error('Post is not found')
+    }
+
+    const user = await User.findById(req.user.id)
+    // Check for user
+    if (!user) {
+        res.status(400)
+        throw new Error('User is not found')
+    }
+
+    // Make sure the logged in user have rights to update this post
+    if (post.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error('User is not authorised')
     }
 
     // await Post.findByIdAndRemove(post)
