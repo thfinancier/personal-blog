@@ -1,4 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { register, reset } from '../features/auth/authSlice'
+import { Spinner } from '../components'
 
 function Registration() {
 
@@ -7,8 +12,43 @@ function Registration() {
   const [password, setPassword] = useState('')
   const [password2, setPassword2] = useState('')
 
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth)
+
   const onSubmit = (e) => {
     e.preventDefault()
+
+    if (password !== password2) {
+      toast.error('Passwords do not match')
+    } else {
+      const userData = {
+        name,
+        email,
+        password
+      }
+
+      dispatch(register(userData))
+    }
+  }
+
+  useEffect(() => {
+
+    if (isError) {
+      toast.error(message)
+    }
+
+    if (isSuccess || user) {
+      navigate('/')
+    }
+
+    dispatch(reset())
+
+  }, [user, isError, isSuccess, message, navigate, dispatch])
+
+  if (isLoading) {
+    return <Spinner />
   }
 
   return (
@@ -51,7 +91,7 @@ function Registration() {
           placeholder='Confirm password'
           onChange={(e) => setPassword2(e.target.value)}
         />
-        <button>Register</button>
+        <button type='submit'>Register</button>
       </form>
     </section>
   )

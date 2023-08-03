@@ -7,7 +7,7 @@ function Header() {
         <nav>
             <Link to='/'>Create Post</Link>
             <Link to='/login'> <FaSignInAlt /> Login </Link>
-            <Link to='/regisration'> <FaUser /> Register </Link>
+            <Link to='/registration'> <FaUser /> Register </Link>
         </nav>
     </header>
   )

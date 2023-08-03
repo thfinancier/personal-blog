@@ -1,3 +1,7 @@
 import Header from './Header'
+import Spinner from './Spinner'
 
-export default Header
+export {
+    Header,
+    Spinner
+}
