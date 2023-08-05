@@ -64,7 +64,7 @@ const authSlice = createSlice({
                 state.isLoading = false
                 state.isError = true
                 // If it is rejected it means there is an error, and this error will be passed in the payload
-                // because it is set in the catch block below
+                // because it is set in the catch block above
                 state.message = action.payload
                 state.user = null
             })

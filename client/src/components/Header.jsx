@@ -19,11 +19,13 @@ function Header() {
     <header>
         <nav>
             <Link to='/'>Create Post</Link>
-            <Link to='/login'> <FaSignInAlt /> Login </Link>
             {user ? (
               <button onClick={onLogout}> <FaSignOutAlt /> Logout </button>
             ) : (
-              <Link to='/registration'> <FaUser /> Register </Link>
+              <>
+                <Link to='/login'> <FaSignInAlt /> Login </Link>
+                <Link to='/registration'> <FaUser /> Register </Link>
+              </>
             )}
         </nav>
     </header>

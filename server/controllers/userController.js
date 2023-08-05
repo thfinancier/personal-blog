@@ -73,13 +73,16 @@ const loginUser = errorCatcher(async (req, res) => {
 // @route  /api/users/user-data
 // @access Private
 const getUserData = errorCatcher(async (req, res) => {
-    const { id, name, email } = await User.findById(req.user.id)
+    // const { id, name, email } = await User.findById(req.user.id)
 
-    res.status(200).json({
-        id,
-        name,
-        email
-    })
+    // res.status(200).json({
+    //     id,
+    //     name,
+    //     email
+    // })
+
+    // Could be simplified to this
+    res.status(200).json(req.user)
 })
 
 // Generate JWT
